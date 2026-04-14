@@ -53,6 +53,7 @@
       color: var(--preta);
       font-family: 'Paralucent', sans-serif;
       font-weight: 200;
+      letter-spacing: 0.02em;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -60,7 +61,7 @@
     /* ─── HERO ─────────────────────────────── */
     .hero {
       position: relative;
-      padding: 72px 0 96px;
+      padding: 72px 0 48px;
       overflow: hidden;
     }
 
@@ -125,7 +126,7 @@
     .form-wrap {
       max-width: 800px;
       margin: 0 auto;
-      padding: 72px 56px 108px;
+      padding: 36px 56px 108px;
       position: relative;
       z-index: 1;
     }
@@ -176,7 +177,7 @@
       font-weight: 200;
       font-size: 0.94rem;
       color: var(--preta);
-      padding: 11px 0;
+      padding: 15px 0;
       outline: none;
       transition: border-color 0.2s;
       -webkit-appearance: none;
@@ -186,7 +187,7 @@
 
     .input-text:focus { border-bottom-color: var(--preta); }
 
-    .input-text::placeholder { opacity: 0.35; }
+    .input-text::placeholder { opacity: 0.7; }
 
     textarea.input-text {
       resize: none;
@@ -485,6 +486,7 @@
       .hero-inner, .form-wrap, .suc-inner, .rodape { padding-left: 28px; padding-right: 28px; }
       .hero-logo, .suc-logo { width: 96px; margin-bottom: 56px; }
       .hero-block-topo { width: 140px; height: 220px; }
+      .hero-block-base { display: none; }
       .input-pair { grid-template-columns: 1fr; gap: 0; }
       .opt-grid { grid-template-columns: 1fr; }
     }
