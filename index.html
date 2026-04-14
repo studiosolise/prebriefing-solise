@@ -274,6 +274,11 @@
     .has-error .err { display: block; }
     .has-error .input-text { border-bottom-color: #b94040; }
 
+    /* Erros individuais no Q02 */
+    #q02.has-error .err { display: none; }
+    #q02 .field-error .err { display: block; }
+    #q02 .field-error .input-text { border-bottom-color: #b94040; }
+
     /* Separador */
     .sep {
       display: flex;
@@ -547,12 +552,13 @@
         <p class="q-num">02</p>
         <p class="q-label obrigatorio">Como podemos te contatar?</p>
         <div class="input-pair">
-          <div>
+          <div id="email-wrap" class="field-wrap">
             <input class="input-text" type="email" name="email" placeholder="seu@email.com" autocomplete="email">
             <p class="err">Informe um e-mail válido.</p>
           </div>
-          <div>
-            <input class="input-text" type="tel" name="telefone" placeholder="WhatsApp (com DDD)" autocomplete="tel">
+          <div id="tel-wrap" class="field-wrap">
+            <input class="input-text" type="tel" name="telefone" placeholder="(00) 00000-0000" autocomplete="tel" inputmode="numeric" maxlength="16">
+            <p class="err">Número incompleto. Informe os 11 dígitos com DDD.</p>
           </div>
         </div>
       </div>
@@ -771,8 +777,16 @@
     // Q02 — e-mail válido
     const email = document.querySelector('[name="email"]').value.trim();
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    marcarErro('q02', !emailOk);
+    marcarErroField('email-wrap', !emailOk);
     if (!emailOk) ok = false;
+
+    // Q02 — WhatsApp com 11 dígitos
+    const tel = document.querySelector('[name="telefone"]').value.replace(/\D/g, '');
+    const telOk = tel.length === 11;
+    marcarErroField('tel-wrap', !telOk);
+    if (!telOk) ok = false;
+
+    marcarErro('q02', !emailOk || !telOk);
 
     // Q03 — ao menos um serviço
     const servicos = document.querySelectorAll('[name="servico"]:checked');
@@ -816,6 +830,13 @@
     const el = document.getElementById(id);
     if (temErro) el.classList.add('has-error');
     else el.classList.remove('has-error');
+  }
+
+  function marcarErroField(id, temErro) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (temErro) el.classList.add('field-error');
+    else el.classList.remove('field-error');
   }
 
   // ── Coleta de dados ──────────────────────────
@@ -957,6 +978,20 @@
     return data.success === true;
   }
 
+  // ── Máscara WhatsApp ───────────────────────────
+  document.querySelector('[name="telefone"]').addEventListener('input', function () {
+    let digits = this.value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length === 0) {
+      this.value = '';
+    } else if (digits.length <= 2) {
+      this.value = '(' + digits;
+    } else if (digits.length <= 7) {
+      this.value = '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
+    } else {
+      this.value = '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
+    }
+  });
+
   // ── Submit principal ─────────────────────────
   document.getElementById('form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -997,6 +1032,8 @@
   document.getElementById('form').addEventListener('input', function(e) {
     const q = e.target.closest('.question');
     if (q) q.classList.remove('has-error');
+    const wrap = e.target.closest('.field-wrap');
+    if (wrap) wrap.classList.remove('field-error');
   });
 
   document.getElementById('form').addEventListener('change', function(e) {
